@@ -52,7 +52,9 @@ describe("config", () => {
         },
         defaultConfig: {
           field: "deletedAt",
-          createValue: () => deletedAt,
+          createUpdates: (deleted) => {
+            return { deletedAt };
+          },
         },
       })
     );
@@ -99,7 +101,9 @@ describe("config", () => {
         },
         // @ts-expect-error - we are testing the error case
         defaultConfig: {
-          createValue: () => new Date(),
+          createUpdates: (deleted) => {
+            return { deletedAt: new Date() };
+          },
         },
       });
     }).toThrowError(
@@ -131,7 +135,9 @@ describe("config", () => {
         models: {
           Post: {
             field: "deletedAt",
-            createValue: () => deletedAt,
+            createUpdates: (deleted) => {
+              return { deletedAt };
+            },
           },
           Comment: true,
         },
@@ -176,14 +182,15 @@ describe("config", () => {
           Post: true,
           Comment: {
             field: "deleted",
-            createValue: Boolean,
+            createUpdates: (deleted) => {
+              return { deleted };
+            },
           },
         },
         defaultConfig: {
           field: "deletedAt",
-          createValue: (deleted) => {
-            if (deleted) return deletedAt;
-            return null;
+          createUpdates: (deleted) => {
+            return deleted ? { deletedAt } : { deletedAt: null };
           },
         },
       })

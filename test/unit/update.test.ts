@@ -68,7 +68,9 @@ describe("update", () => {
         models: { User: true },
         defaultConfig: {
           field: "deleted",
-          createValue: Boolean,
+          createUpdates: (deleted) => {
+            return { deleted };
+          },
           allowToOneUpdates: true,
         },
       })

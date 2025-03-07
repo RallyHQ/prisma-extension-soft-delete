@@ -109,7 +109,9 @@ describe("findUnique", () => {
         models: {
           User: {
             field: "deleted",
-            createValue: Boolean,
+            createUpdates: (deleted) => {
+              return { deleted };
+            },
             allowCompoundUniqueIndexWhere: true,
           },
         },
@@ -149,7 +151,9 @@ describe("findUnique", () => {
     await extendedClient.user.findUnique(undefined);
 
     // params have not been modified
-    expect(extendedClient.user.findUnique.query).toHaveBeenCalledWith(undefined);
+    expect(extendedClient.user.findUnique.query).toHaveBeenCalledWith(
+      undefined
+    );
     expect(client.user.findFirst).not.toHaveBeenCalled();
   });
 
@@ -169,7 +173,9 @@ describe("findUnique", () => {
     // expect empty where not to modify params
     // @ts-expect-error testing if user passes where without unique field
     await extendedClient.user.findUnique({ where: {} });
-    expect(extendedClient.user.findUnique.query).toHaveBeenCalledWith({ where: {} });
+    expect(extendedClient.user.findUnique.query).toHaveBeenCalledWith({
+      where: {},
+    });
     client.user.findUnique.mockClear();
 
     // expect where with undefined id field not to modify params
