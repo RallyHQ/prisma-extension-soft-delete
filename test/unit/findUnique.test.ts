@@ -108,7 +108,7 @@ describe("findUnique", () => {
       createSoftDeleteExtension({
         models: {
           User: {
-            field: "deleted",
+            fields: ["deleted"],
             createUpdates: (deleted) => {
               return { deleted };
             },

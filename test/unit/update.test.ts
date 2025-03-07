@@ -67,7 +67,7 @@ describe("update", () => {
       createSoftDeleteExtension({
         models: { User: true },
         defaultConfig: {
-          field: "deleted",
+          fields: ["deleted"],
           createUpdates: (deleted) => {
             return { deleted };
           },

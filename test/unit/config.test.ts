@@ -51,7 +51,7 @@ describe("config", () => {
           Comment: true,
         },
         defaultConfig: {
-          field: "deletedAt",
+          fields: ["deletedAt"],
           createUpdates: (deleted) => {
             return { deletedAt };
           },
@@ -119,7 +119,7 @@ describe("config", () => {
         },
         // @ts-expect-error - we are testing the error case
         defaultConfig: {
-          field: "deletedAt",
+          fields: ["deletedAt"],
         },
       });
     }).toThrowError(
@@ -134,7 +134,7 @@ describe("config", () => {
       createSoftDeleteExtension({
         models: {
           Post: {
-            field: "deletedAt",
+            fields: ["deletedAt"],
             createUpdates: (deleted) => {
               return { deletedAt };
             },
@@ -181,14 +181,14 @@ describe("config", () => {
         models: {
           Post: true,
           Comment: {
-            field: "deleted",
+            fields: ["deleted"],
             createUpdates: (deleted) => {
               return { deleted };
             },
           },
         },
         defaultConfig: {
-          field: "deletedAt",
+          fields: ["deletedAt"],
           createUpdates: (deleted) => {
             return deleted ? { deletedAt } : { deletedAt: null };
           },
