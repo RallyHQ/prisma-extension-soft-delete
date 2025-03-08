@@ -228,7 +228,13 @@ describe("include", () => {
     const client = new MockClient();
     const extendedClient = client.$extends(
       createSoftDeleteExtension({
-        models: { Comment: true },
+        models: {
+          Comment: {
+            field: "deletedAt",
+            createValue: (deleted: boolean) =>
+              deleted ? new Date() : "NOT DELETED",
+          },
+        },
       })
     );
 
@@ -237,13 +243,16 @@ describe("include", () => {
         Promise.resolve({
           posts: [
             {
-              comments: [{ deleted: true }, { deleted: false }],
+              comments: [
+                { deletedAt: new Date() },
+                { deletedAt: "NOT DELETED" },
+              ],
             },
             {
               comments: [
-                { deleted: false },
-                { deleted: false },
-                { deleted: true },
+                { deletedAt: "NOT DELETED" },
+                { deletedAt: "NOT DELETED" },
+                { deletedAt: new Date() },
               ],
             },
           ],
@@ -267,7 +276,7 @@ describe("include", () => {
           include: {
             comments: {
               where: {
-                deleted: false,
+                deletedAt: "NOT DELETED",
               },
             },
           },
@@ -276,8 +285,13 @@ describe("include", () => {
     });
     expect(result).toEqual({
       posts: [
-        { comments: [{ deleted: false }] },
-        { comments: [{ deleted: false }, { deleted: false }] },
+        { comments: [{ deletedAt: "NOT DELETED" }] },
+        {
+          comments: [
+            { deletedAt: "NOT DELETED" },
+            { deletedAt: "NOT DELETED" },
+          ],
+        },
       ],
     });
   });
