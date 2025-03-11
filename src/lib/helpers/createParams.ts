@@ -3,6 +3,7 @@ import { NestedParams } from "prisma-extension-nested-operations";
 
 import { ModelConfig } from "../types";
 import { addDeletedToSelect } from "../utils/nestedReads";
+import { hasAnyConfigField } from "../utils/hasAnyConfigField";
 
 const uniqueFieldsByModel: Record<string, string[]> = {};
 const uniqueIndexFieldsByModel: Record<string, string[]> = {};
@@ -39,10 +40,7 @@ export type CreateParams = (
   params: Params
 ) => CreateParamsReturn;
 
-export const createDeleteParams: CreateParams = (
-  { field, createUpdates },
-  params
-) => {
+export const createDeleteParams: CreateParams = ({ createUpdates }, params) => {
   if (
     !params.model ||
     // do nothing for delete: false
@@ -136,10 +134,8 @@ export const createUpdateManyParams: CreateParams = (config, params) => {
         where: {
           ...params.args?.where,
           // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -214,11 +210,8 @@ export const createFindUniqueParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -241,11 +234,8 @@ export const createFindUniqueOrThrowParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -262,11 +252,8 @@ export const createFindFirstParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -283,11 +270,8 @@ export const createFindFirstOrThrowParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -304,11 +288,8 @@ export const createFindManyParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -326,11 +307,8 @@ export const createGroupByParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -349,11 +327,8 @@ export const createCountParams: CreateParams = (config, params) => {
         ...args,
         where: {
           ...where,
-          // allow overriding the deleted field in where
-          ...(where[config.field]
-            ? {
-                [config.field]: where[config.field],
-              }
+          ...(hasAnyConfigField(where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -372,11 +347,8 @@ export const createAggregateParams: CreateParams = (config, params) => {
         ...args,
         where: {
           ...where,
-          // allow overriding the deleted field in where
-          ...(where[config.field]
-            ? {
-                [config.field]: where[config.field],
-              }
+          ...(hasAnyConfigField(where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -388,7 +360,10 @@ export const createWhereParams: CreateParams = (config, params) => {
   if (!params.scope) return { params };
 
   // customise list queries with every modifier unless the deleted field is set
-  if (params.scope?.modifier === "every" && !params.args[config.field]) {
+  if (
+    params.scope?.modifier === "every" &&
+    !hasAnyConfigField(params.args, config.fields)
+  ) {
     return {
       params: {
         ...params,
@@ -404,10 +379,8 @@ export const createWhereParams: CreateParams = (config, params) => {
       ...params,
       args: {
         ...params.args,
-        ...(params.args[config.field]
-          ? {
-              [config.field]: params.args[config.field],
-            }
+        ...(hasAnyConfigField(params.args, config.fields)
+          ? {}
           : config.createUpdates(false)),
       },
     },
@@ -418,7 +391,10 @@ export const createIncludeParams: CreateParams = (config, params) => {
   // includes of toOne relation cannot filter deleted records using params
   // instead ensure that the deleted field is selected and filter the results
   if (params.scope?.relations?.to.isList === false) {
-    if (params.args?.select && !params.args?.select[config.field]) {
+    if (
+      params.args?.select &&
+      !hasAnyConfigField(params.args.select, config.fields)
+    ) {
       return {
         params: addDeletedToSelect(params, config),
         ctx: { deletedFieldAdded: true },
@@ -435,11 +411,8 @@ export const createIncludeParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },
@@ -455,7 +428,10 @@ export const createSelectParams: CreateParams = (config, params) => {
 
   // selects of toOne relation cannot filter deleted records using params
   if (params.scope?.relations?.to.isList === false) {
-    if (params.args?.select && !params.args.select[config.field]) {
+    if (
+      params.args?.select &&
+      !hasAnyConfigField(params.args.select, config.fields)
+    ) {
       return {
         params: addDeletedToSelect(params, config),
         ctx: { deletedFieldAdded: true },
@@ -472,11 +448,8 @@ export const createSelectParams: CreateParams = (config, params) => {
         ...params.args,
         where: {
           ...params.args?.where,
-          // allow overriding the deleted field in where
-          ...(params.args?.where?.[config.field]
-            ? {
-                [config.field]: params.args?.where?.[config.field],
-              }
+          ...(hasAnyConfigField(params.args?.where, config.fields)
+            ? {}
             : config.createUpdates(false)),
         },
       },

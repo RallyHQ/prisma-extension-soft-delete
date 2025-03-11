@@ -34,13 +34,13 @@ type ConfigBound<F> = F extends (x: ModelConfig, ...args: infer P) => infer R
 export function createSoftDeleteExtension({
   models,
   defaultConfig = {
-    field: "deleted",
+    fields: ["deleted"],
     createUpdates: (deleted: boolean) => ({ deleted }),
     allowToOneUpdates: false,
     allowCompoundUniqueIndexWhere: false,
   },
 }: Config) {
-  if (!defaultConfig.field) {
+  if (!defaultConfig.fields || defaultConfig.fields.length === 0) {
     throw new Error(
       "prisma-extension-soft-delete: defaultConfig.field is required"
     );

@@ -176,7 +176,7 @@ describe("updateMany", () => {
       createSoftDeleteExtension({
         models: {
           User: {
-            field: "deletedAt",
+            fields: ["deletedAt"],
             createUpdates: (deleted) => {
               return deleted ? { deletedAt: new Date() } : { deletedAt: null };
             },

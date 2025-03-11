@@ -4,14 +4,17 @@ export function addDeletedToSelect<T extends { args?: any }>(
   params: T,
   config: ModelConfig
 ): T {
-  if (params.args.select && !params.args.select[config.field]) {
+  if (params.args.select) {
     return {
       ...params,
       args: {
         ...params.args,
         select: {
           ...params.args.select,
-          [config.field]: true,
+          ...config.fields.reduce<{ [key: string]: boolean }>((acc, field) => {
+            acc[field] = true;
+            return acc;
+          }, {}),
         },
       },
     };
@@ -26,10 +29,14 @@ export function stripDeletedFieldFromResults(
 ) {
   if (Array.isArray(results)) {
     results?.forEach((item: any) => {
-      delete item[config.field];
+      config.fields.forEach((field) => {
+        delete item[field];
+      });
     });
   } else if (results) {
-    delete results[config.field];
+    config.fields.forEach((field) => {
+      delete results[field];
+    });
   }
 
   return results;
