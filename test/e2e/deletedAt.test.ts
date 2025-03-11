@@ -12,18 +12,16 @@ describe("deletedAt", () => {
   beforeAll(async () => {
     testClient = new PrismaClient();
     testClient = testClient.$extends(
-      createSoftDeleteExtension(
-        {
-          models: {
-            User: {
-              field: "deletedAt",
-              createValue: (deleted) => {
-                return deleted ? new Date() : null;
-              },
+      createSoftDeleteExtension({
+        models: {
+          User: {
+            field: "deletedAt",
+            createUpdates: (deleted) => {
+              return deleted ? { deletedAt: new Date() } : { deletedAt: null };
             },
           },
         },
-      )
+      })
     );
 
     profile = await client.profile.create({

@@ -48,7 +48,9 @@ describe("updateMany", () => {
     await extendedClient.user.updateMany(undefined);
 
     // params have not been modified
-    expect(extendedClient.user.updateMany.query).toHaveBeenCalledWith(undefined);
+    expect(extendedClient.user.updateMany.query).toHaveBeenCalledWith(
+      undefined
+    );
   });
 
   it("excludes deleted records from root updateMany action", async () => {
@@ -175,9 +177,8 @@ describe("updateMany", () => {
         models: {
           User: {
             field: "deletedAt",
-            createValue: (deleted) => {
-              if (deleted) return new Date();
-              return null;
+            createUpdates: (deleted) => {
+              return deleted ? { deletedAt: new Date() } : { deletedAt: null };
             },
           },
         },

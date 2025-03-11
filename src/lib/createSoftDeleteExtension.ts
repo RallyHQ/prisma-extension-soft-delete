@@ -35,7 +35,7 @@ export function createSoftDeleteExtension({
   models,
   defaultConfig = {
     field: "deleted",
-    createValue: Boolean,
+    createUpdates: (deleted: boolean) => ({ deleted }),
     allowToOneUpdates: false,
     allowCompoundUniqueIndexWhere: false,
   },
@@ -45,7 +45,7 @@ export function createSoftDeleteExtension({
       "prisma-extension-soft-delete: defaultConfig.field is required"
     );
   }
-  if (!defaultConfig.createValue) {
+  if (!defaultConfig.createUpdates) {
     throw new Error(
       "prisma-extension-soft-delete: defaultConfig.createValue is required"
     );

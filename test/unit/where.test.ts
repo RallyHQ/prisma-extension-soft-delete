@@ -149,7 +149,7 @@ describe("where", () => {
             deleted: false,
           },
           every: {
-            OR: [{ deleted: { not: false } }, { content: expect.any(String) }],
+            OR: [{ NOT: { deleted: false } }, { content: expect.any(String) }],
           },
           none: {
             content: expect.any(String),
