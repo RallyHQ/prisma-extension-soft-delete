@@ -16,8 +16,7 @@
     "typecheck": "npm run build:cjs -- --noEmit && npm run build:esm -- --noEmit",
     "validate": "kcd-scripts validate lint,typecheck,test",
     "semantic-release": "semantic-release",
-    "doctoc": "doctoc .",
-    "postinstall": "tsc --outDir ./build"
+    "doctoc": "doctoc ."
   },
   "files": [
     "dist"
