@@ -16,7 +16,8 @@
     "validate": "kcd-scripts validate lint,typecheck,test",
     "semantic-release": "semantic-release",
     "doctoc": "doctoc .",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test:unit"
   },
   "files": [
     "dist"
@@ -72,5 +73,5 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

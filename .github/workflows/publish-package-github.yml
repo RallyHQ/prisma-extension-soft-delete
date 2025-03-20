@@ -15,7 +15,6 @@ jobs:
           node-version: "20.x"
           registry-url: "https://npm.pkg.github.com"
           scope: "@rallyhq"
-      - run: npm run test:unit
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
