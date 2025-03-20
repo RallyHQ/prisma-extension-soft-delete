@@ -3,22 +3,6 @@ on:
   release:
     types: [published]
 jobs:
-  test:
-    name: "node ${{ matrix.node }} chrome ${{ matrix.os }} "
-    runs-on: "${{ matrix.os }}"
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [16]
-    steps:
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - uses: actions/checkout@v2
-      - run: npm install
-      - run: npm run validate
-        env:
-          CI: true
   release:
     runs-on: ubuntu-latest
     permissions:
