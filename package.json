@@ -15,9 +15,7 @@
     "typecheck": "npm run build:cjs -- --noEmit && npm run build:esm -- --noEmit",
     "validate": "kcd-scripts validate lint,typecheck,test",
     "semantic-release": "semantic-release",
-    "doctoc": "doctoc .",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run test:unit"
+    "doctoc": "doctoc ."
   },
   "files": [
     "dist"

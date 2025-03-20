@@ -3,7 +3,23 @@ on:
   release:
     types: [published]
 jobs:
-  build:
+  test:
+    name: "node ${{ matrix.node }} chrome ${{ matrix.os }} "
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run validate
+        env:
+          CI: true
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -15,6 +31,8 @@ jobs:
           node-version: "20.x"
           registry-url: "https://npm.pkg.github.com"
           scope: "@rallyhq"
+      - run: npm install
+      - run: npm run build
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
