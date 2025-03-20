@@ -17,7 +17,7 @@
     "validate": "kcd-scripts validate lint,typecheck,test",
     "semantic-release": "semantic-release",
     "doctoc": "doctoc .",
-    "prepack": "yarn build",
+    "prepack": "npm run build",
     "postinstall": "tsc --outDir ./build"
   },
   "files": [
