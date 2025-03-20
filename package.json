@@ -1,6 +1,5 @@
 {
-  "name": "prisma-extension-soft-delete",
-  "version": "1.0.0-semantically-released",
+  "name": "@RallyHQ/prisma-extension-soft-delete",
   "description": "Prisma extension for soft deleting records",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +15,8 @@
     "typecheck": "npm run build:cjs -- --noEmit && npm run build:esm -- --noEmit",
     "validate": "kcd-scripts validate lint,typecheck,test",
     "semantic-release": "semantic-release",
-    "doctoc": "doctoc ."
+    "doctoc": "doctoc .",
+    "prepare": "npm run build"
   },
   "files": [
     "dist"
@@ -54,7 +54,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/olivierwilkinson/prisma-extension-soft-delete.git"
+    "url": "git+https://github.com/RallyHQ/prisma-extension-soft-delete.git"
   },
   "release": {
     "branches": [
@@ -70,6 +70,7 @@
     ]
   },
   "publishConfig": {
-    "access": "public"
-  }
+    "registry": "https://npm.pkg.github.com"
+  },
+  "version": "1.0.1"
 }
